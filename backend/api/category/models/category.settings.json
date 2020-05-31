@@ -1,0 +1,21 @@
+{
+  "kind": "collectionType",
+  "collectionName": "categories",
+  "info": {
+    "name": "Category"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true
+  },
+  "attributes": {
+    "category_name": {
+      "type": "string"
+    },
+    "category_types": {
+      "type": "component",
+      "repeatable": true,
+      "component": "category.category-types"
+    }
+  }
+}

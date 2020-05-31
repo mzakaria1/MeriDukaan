@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_category_category_types",
+  "info": {
+    "name": "Category Types",
+    "icon": "allergies"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    }
+  }
+}

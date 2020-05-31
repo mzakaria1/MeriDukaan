@@ -1,0 +1,28 @@
+{
+  "kind": "collectionType",
+  "collectionName": "collections",
+  "info": {
+    "name": "collection"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "richtext"
+    },
+    "rating": {
+      "type": "integer"
+    },
+    "starting_price": {
+      "type": "integer"
+    },
+    "vendor": {
+      "type": "string"
+    }
+  }
+}
