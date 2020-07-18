@@ -1244,6 +1244,15 @@
                 }
               }
             }
+          },
+          "fcmToken": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
           }
         }
       },
@@ -1280,6 +1289,15 @@
             "default": false
           },
           "role": {
+            "type": "string"
+          },
+          "fcmToken": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "name": {
             "type": "string"
           }
         }

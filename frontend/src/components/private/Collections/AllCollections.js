@@ -1,35 +1,22 @@
 import React, { Component } from "react";
 import MainLayout from "../../common/Layout";
-import { Button, message, Spin, Divider, Table, Popconfirm } from "antd";
+import { Button, message, Spin, Divider, Table, Popconfirm, Tag } from "antd";
 import {
   PlusOutlined,
   DeleteOutlined,
   EditOutlined,
   QuestionCircleOutlined,
+  FundViewOutlined,
 } from "@ant-design/icons";
-import CollectionInfo from "./CollectionInfo";
-
-import { database } from "../../../config/firebase.config";
+import { authedAxios, API_URL } from "../../../config/axios.config";
 export class AllCollections extends Component {
   state = {
     loading: true,
     collections: null,
+    deleteingCollection: false,
   };
 
   columns = [
-    {
-      title: " Images",
-      dataIndex: "imagesurls",
-      key: "imagesurls",
-      render: (url) => (
-        <img
-          src="https://firebasestorage.googleapis.com/v0/b/practice-aa.appspot.com/o/product_images%2FQmEHNVwca5XwlBC6io8l%2Fss.jpg?alt=media&token=da8ddf9d-4cbb-4585-9c1c-146d142f8621"
-          alt="Uploaded Images"
-          height="100"
-          width="150"
-        />
-      ),
-    },
     {
       title: "Collection Name",
       dataIndex: "name",
@@ -41,12 +28,7 @@ export class AllCollections extends Component {
     {
       title: "Description",
       dataIndex: "description",
-      key: "Description",
-    },
-    {
-      title: "Type",
-      dataIndex: "type",
-      key: "type",
+      key: "description",
     },
     {
       title: "Category",
@@ -54,141 +36,164 @@ export class AllCollections extends Component {
       key: "category",
     },
     {
-      title: "Products",
-      dataIndex: "inProducts",
+      title: "Vendor",
+      dataIndex: "vendor",
       key: "vendor",
     },
     {
       title: "Starting Price",
       dataIndex: "starting_price",
       key: "starting_price",
+      render: (price) => {
+        return (
+          <Tag key={price} color="green">
+            Rs. {price}
+          </Tag>
+        );
+      },
     },
     {
       title: "Action",
       key: "action",
+
       render: (text, record) => (
         <span>
-          <Button
-            type="primary"
-            icon={<EditOutlined />}
-            block
-            style={{
-              backgroundColor: "green",
-            }}
-            onClick="">
-            Edit
-          </Button>
+          {localStorage.getItem("userRole") === "supplier" ? (
+            <div>
+              <Button
+                type="primary"
+                icon={<EditOutlined />}
+                block
+                style={{
+                  backgroundColor: "green",
+                }}
+                onClick={() => this.editCollectionForm(record.id)}>
+                Edit
+              </Button>
 
-          <Divider type="vertical" />
-          <Popconfirm
-            title="Are you sure？"
-            icon={<QuestionCircleOutlined style={{ color: "red" }} />}
-            onConfirm=""
-            okText="Yes"
-            cancelText="No">
-            <Button block type="danger" icon={<DeleteOutlined />}>
-              Delete
+              <Divider type="vertical" />
+              <Popconfirm
+                loading={this.state.deleteingCollection}
+                title="Are you sure？"
+                icon={<QuestionCircleOutlined style={{ color: "red" }} />}
+                onConfirm={() => this.deleteCollection(record)}
+                okText="Yes"
+                cancelText="No">
+                <Button
+                  loading={this.state.deleteingCollection}
+                  block
+                  type="danger"
+                  icon={<DeleteOutlined />}>
+                  Delete
+                </Button>
+              </Popconfirm>
+            </div>
+          ) : (
+            <Button
+              type="primary"
+              icon={<FundViewOutlined />}
+              block
+              style={{
+                backgroundColor: "green",
+              }}
+              onClick={() => this.collectionInfo(record)}>
+              View Collection
             </Button>
-          </Popconfirm>
+          )}
         </span>
       ),
     },
   ];
 
+  editCollectionForm = (id) => {
+    this.props.history.push(`/editCollection/${id}`);
+  };
+  deleteCollection = async (record) => {
+    this.setState({
+      deleteingCollection: true,
+    });
+    const newCollection = [];
+    await this.state.collections.map((element) => {
+      console.log(element);
+      if (element.id !== record.id) {
+        newCollection.push({ ...element });
+      }
+    });
+    console.log(newCollection);
+
+    await authedAxios
+      .delete(`/collections/${record.id}`)
+      .then(async (res) => {
+        this.setState({
+          deleteingCollection: false,
+          collections: newCollection,
+        });
+        await message.success("Collection has been successfully deleted.", 3.5);
+      })
+      .catch((err) => {
+        console.log(err);
+        message.error("Error: " + err, 3.5);
+      });
+  };
+
   componentDidMount() {
+    // this.loadCollections();
     this.loadCollections();
   }
 
-  // componentDidUpdate(prevState, nextProps) {
-  //   if (prevState !== nextProps) {
-  //     this.loadCollections();
-  //   }
-  // }
+  loadCollections = () => {
+    const userId = localStorage.getItem("userId");
+    const userRole = localStorage.getItem("userRole");
+    authedAxios
+      .get(`/collections`)
+      .then(async (res) => {
+        console.log(res);
+        const pro = res.data;
+        var pp = [];
 
-  async loadCollections() {
-    let pros = "";
-    const data = [];
-    await database
-      .collection("Collections")
-      .get()
-      .then((snapshot) => {
-        snapshot.docs.forEach((doc) => {
-          const pro = doc.data().products;
-          if (!pro.isNullofEmpty) {
-            this.load(pro)
-              .then((pp) => {
-                data.push({
-                  id: doc.id,
-                  inProducts: pp,
-                  ...doc.data(),
-                });
-                console.log(data);
-                this.setState(
-                  {
-                    collections: data,
-                    loading: false,
-                  },
-                  () => {
-                    console.log(this.state.collections);
-                  }
-                );
-              })
-              .catch((error) => {
-                console.log(error);
+        if (userRole === "supplier") {
+          pro.forEach((element) => {
+            const vendorid = element.vendor ? element.vendor.id : "";
+            console.log(vendorid);
+            if (vendorid === userId) {
+              pp.push({
+                ...element,
+                vendor: element.vendor.username,
+                category: element.category.category_name,
               });
-          } else {
-            data.push({
-              id: doc.id,
-              ...doc.data(),
-            });
-            console.log("No");
-            this.setState(
-              {
-                collections: data,
-                loading: false,
-              },
-              () => {
-                console.log(this.state.collections);
-              }
-            );
-          }
-        });
-      })
-      .catch((error) => {
-        message.error("Unable to Fetch Collections", error.message);
-        console.log(error);
-      });
-  }
-
-  load = (c_productIds) => {
-    return new Promise((resolve, reject) => {
-      let pros = "";
-      c_productIds.forEach((element) => {
-        database
-          .collection("Products")
-          .doc(element)
-          .get()
-          .then((e) => {
-            const pp = " || " + e.data().title;
-            console.log(e.data());
-            console.log(pp);
-            pros = pp + pros;
-            console.log(pros);
-            resolve(pros);
-          })
-          .catch((error) => {
-            console.log(error);
-            reject(pros);
+            }
           });
+          this.setState({
+            collections: pp,
+            loading: false,
+          });
+        } else if (userRole === "admin") {
+          let colls = [];
+          await pro.map((ele) => {
+            colls.push({
+              ...ele,
+              vendor: ele.vendor.username,
+              category: ele.category.category_name,
+            });
+          });
+          this.setState({
+            collections: colls,
+            loading: false,
+          });
+        } else {
+          this.setState({
+            collections: pro,
+            loading: false,
+          });
+        }
+      })
+      .catch((err) => {
+        message.error(err, 2.0);
       });
-      console.log(pros);
-    });
   };
 
-  getAllDoc() {}
-
   collectionInfo = (record) => {
-    this.props.history.push("collectionInfo/" + record.id);
+    this.props.history.push("/collectionInfo/" + record.id);
   };
 
   newCollectionForm = () => {
@@ -208,22 +213,27 @@ export class AllCollections extends Component {
           <h3 style={{ float: "left", margin: "10px", marginLeft: 0 }}>
             All Collections
           </h3>
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            style={{ float: "right", marginBottom: "10px" }}
-            onClick={this.newCollectionForm}>
-            Create Collection
-          </Button>
+          {localStorage.getItem("userRole") === "supplier" ? (
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              style={{ float: "right", marginBottom: "10px" }}
+              onClick={this.newCollectionForm}>
+              Create Collection
+            </Button>
+          ) : (
+            ""
+          )}
         </div>
         <Divider />
         {this.state.loading && !this.state.collections ? (
-          <Spin spinning={true} tip="Loading products..." />
+          <Spin spinning={true} tip="Loading Collections..." />
         ) : (
           <Table
             columns={this.columns}
             dataSource={this.state.collections}
             rowKey="id"
+            loading={this.loading}
           />
         )}
       </MainLayout>

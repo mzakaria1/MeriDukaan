@@ -1,0 +1,34 @@
+{
+  "kind": "collectionType",
+  "collectionName": "customers",
+  "info": {
+    "name": "Customer"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "mobile": {
+      "type": "integer"
+    },
+    "street": {
+      "type": "string"
+    },
+    "address": {
+      "type": "richtext"
+    },
+    "city": {
+      "type": "string"
+    },
+    "state": {
+      "type": "string"
+    },
+    "pin_code": {
+      "type": "string"
+    }
+  }
+}

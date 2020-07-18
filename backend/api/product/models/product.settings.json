@@ -9,17 +9,11 @@
     "timestamps": true
   },
   "attributes": {
-    "Type": {
-      "type": "string"
-    },
-    "category": {
-      "model": "category"
-    },
-    "price": {
-      "type": "integer"
-    },
     "title": {
       "type": "string"
+    },
+    "description": {
+      "type": "richtext"
     },
     "size": {
       "type": "string"
@@ -27,8 +21,40 @@
     "product_code": {
       "type": "string"
     },
+    "price": {
+      "type": "integer"
+    },
+    "product_collection": {
+      "model": "collection",
+      "via": "products"
+    },
     "vendor": {
+      "plugin": "users-permissions",
+      "model": "user"
+    },
+    "pictures": {
+      "collection": "file",
+      "via": "related",
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos"
+      ],
+      "plugin": "upload",
+      "required": false
+    },
+    "category": {
+      "model": "category"
+    },
+    "type": {
       "type": "string"
+    },
+    "stock_quantity": {
+      "type": "integer"
+    },
+    "reviews": {
+      "via": "product",
+      "collection": "review"
     }
   }
 }

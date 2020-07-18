@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_order_products_ordered_products",
+  "info": {
+    "name": "ordered_products",
+    "icon": "align-center"
+  },
+  "options": {},
+  "attributes": {
+    "quantity": {
+      "type": "string"
+    },
+    "product": {
+      "model": "product"
+    },
+    "size": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "kind": "collectionType",
+  "collectionName": "order_invoices",
+  "info": {
+    "name": "OrderInvoice"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true
+  },
+  "attributes": {
+    "order_amount": {
+      "type": "integer"
+    },
+    "return_to_amount": {
+      "type": "integer"
+    },
+    "earned_amount": {
+      "type": "integer"
+    },
+    "margin_applied": {
+      "type": "integer"
+    },
+    "order": {
+      "model": "order"
+    },
+    "total_products_price": {
+      "type": "integer"
+    },
+    "vendor": {
+      "plugin": "users-permissions",
+      "model": "user"
+    },
+    "customer": {
+      "model": "customer"
+    }
+  }
+}

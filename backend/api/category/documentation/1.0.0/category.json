@@ -541,6 +541,58 @@
                 }
               }
             }
+          },
+          "products": {
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "size": {
+                "type": "string"
+              },
+              "product_code": {
+                "type": "string"
+              },
+              "price": {
+                "type": "integer"
+              },
+              "product_collection": {
+                "type": "string"
+              },
+              "vendor": {
+                "type": "string"
+              },
+              "pictures": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "category": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "stock_quantity": {
+                "type": "integer"
+              },
+              "reviews": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       },
@@ -565,6 +617,9 @@
                 }
               }
             }
+          },
+          "products": {
+            "type": "string"
           }
         }
       }

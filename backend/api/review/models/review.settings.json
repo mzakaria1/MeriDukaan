@@ -1,0 +1,24 @@
+{
+  "kind": "collectionType",
+  "collectionName": "reviews",
+  "info": {
+    "name": "Review"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true
+  },
+  "attributes": {
+    "review": {
+      "type": "richtext"
+    },
+    "reseller": {
+      "plugin": "users-permissions",
+      "model": "user"
+    },
+    "product": {
+      "model": "product",
+      "via": "reviews"
+    }
+  }
+}

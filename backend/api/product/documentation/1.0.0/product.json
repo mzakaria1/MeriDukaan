@@ -522,8 +522,163 @@
           "id": {
             "type": "string"
           },
-          "Type": {
+          "title": {
             "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "size": {
+            "type": "string"
+          },
+          "product_code": {
+            "type": "string"
+          },
+          "price": {
+            "type": "integer"
+          },
+          "product_collection": {
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "rating": {
+                "type": "integer"
+              },
+              "starting_price": {
+                "type": "integer"
+              },
+              "vendor": {
+                "type": "string"
+              },
+              "products": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "category": {
+                "type": "string"
+              }
+            }
+          },
+          "vendor": {
+            "required": [
+              "id",
+              "username",
+              "email"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "username": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "provider": {
+                "type": "string"
+              },
+              "password": {
+                "type": "string"
+              },
+              "resetPasswordToken": {
+                "type": "string"
+              },
+              "confirmed": {
+                "type": "boolean"
+              },
+              "blocked": {
+                "type": "boolean"
+              },
+              "role": {
+                "type": "string"
+              },
+              "fcmToken": {
+                "type": "string"
+              },
+              "address": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            }
+          },
+          "pictures": {
+            "type": "array",
+            "items": {
+              "required": [
+                "id",
+                "name",
+                "hash",
+                "mime",
+                "size",
+                "url",
+                "provider"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "alternativeText": {
+                  "type": "string"
+                },
+                "caption": {
+                  "type": "string"
+                },
+                "width": {
+                  "type": "integer"
+                },
+                "height": {
+                  "type": "integer"
+                },
+                "formats": {
+                  "type": "object"
+                },
+                "hash": {
+                  "type": "string"
+                },
+                "ext": {
+                  "type": "string"
+                },
+                "mime": {
+                  "type": "string"
+                },
+                "size": {
+                  "type": "number"
+                },
+                "url": {
+                  "type": "string"
+                },
+                "previewUrl": {
+                  "type": "string"
+                },
+                "provider": {
+                  "type": "string"
+                },
+                "provider_metadata": {
+                  "type": "object"
+                },
+                "related": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "category": {
             "required": [
@@ -538,38 +693,48 @@
               },
               "category_types": {
                 "type": "component"
+              },
+              "products": {
+                "type": "string"
               }
             }
           },
-          "price": {
+          "type": {
+            "type": "string"
+          },
+          "stock_quantity": {
             "type": "integer"
           },
-          "title": {
-            "type": "string"
-          },
-          "size": {
-            "type": "string"
-          },
-          "product_code": {
-            "type": "string"
-          },
-          "vendor": {
-            "type": "string"
+          "reviews": {
+            "type": "array",
+            "items": {
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "review": {
+                  "type": "string"
+                },
+                "reseller": {
+                  "type": "string"
+                },
+                "product": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       },
       "NewProduct": {
         "properties": {
-          "Type": {
-            "type": "string"
-          },
-          "category": {
-            "type": "string"
-          },
-          "price": {
-            "type": "integer"
-          },
           "title": {
+            "type": "string"
+          },
+          "description": {
             "type": "string"
           },
           "size": {
@@ -578,8 +743,29 @@
           "product_code": {
             "type": "string"
           },
+          "price": {
+            "type": "integer"
+          },
+          "product_collection": {
+            "type": "string"
+          },
           "vendor": {
             "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "stock_quantity": {
+            "type": "integer"
+          },
+          "reviews": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
       }

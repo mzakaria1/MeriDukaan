@@ -1,52 +1,53 @@
 import React from "react";
 import MainLayout from "../../common/Layout";
-import { Form, Input, Button, Divider, message, Spin } from "antd";
-import { database } from "../../../config/firebase.config";
+import { Form, Input, Button, Divider, message, Spin, Select } from "antd";
+import { authedAxios } from "../../../config/axios.config";
 
 const layout = {
   labelCol: {
-    span: 8
+    span: 8,
   },
   wrapperCol: {
-    span: 16
-  }
+    span: 16,
+  },
 };
 
 const validateMessages = {
   required: "This field is required!",
   types: {
     email: "Not a validate email!",
-    number: "Not a validate number!"
+    number: "Not a validate number!",
   },
   number: {
-    range: "Must be between ${min} and ${max}"
-  }
+    range: "Must be between ${min} and ${max}",
+  },
 };
 export class EditProduct extends React.Component {
   state = {
     product: null,
     gettingProducts: false,
-    id: null
+    id: null,
+    category_names: null,
+    type_names: null,
+    loading: false,
   };
-  onFinish = values => {
-    database
-      .collection("Products")
-      .doc(this.state.id)
-      .update({
-        title: values.title,
-        description: values.Description,
-        vendor: values.Vendor,
-        Category: values.Category,
-        Type: values.Type,
-        price: values.price
-      })
-      .then(res => {
+  onFinish = (values) => {
+    const data = {
+      title: values.title,
+      description: values.description,
+      type: values.Type,
+      price: values.price,
+      stock_quantity: values.stock_quantity,
+    };
+    authedAxios
+      .put(`/products/${this.state.id}`, data)
+      .then((res) => {
         this.props.history.push("/products");
-        message.success("Product has been Edited Successfully!");
+        message.success("Product has been Edited Successfully!", 1.5);
       })
-      .catch(error => {
-        console.error("Error writing document: ", error);
-        message.error("Error while editing product", error);
+      .catch((err) => {
+        console.log(err);
+        message.error(err);
       });
   };
   cancelUpdate = () => {
@@ -55,24 +56,59 @@ export class EditProduct extends React.Component {
   loadDataForEdit = () => {
     const dd = this.props.history.location.pathname;
     const key = dd.split("/");
-    database
-      .collection("Products")
-      .doc(key[2])
-      .get()
-      .then(doc => {
-        if (doc.exists) {
-          this.setState({
-            product: doc.data(),
-            gettingProducts: true,
-            id: key[2]
+
+    authedAxios.get(`/products/${key[2]}`).then((res) => {
+      console.log(res.data);
+      this.setState({
+        product: res.data,
+        gettingProducts: true,
+        id: key[2],
+      });
+    });
+  };
+
+  loadCategories = async () => {
+    await authedAxios
+      .get("/categories")
+      .then((res) => {
+        console.log(res.data);
+        const data = res.data;
+        var category = [];
+        data.forEach((element) => {
+          category.push({
+            id: element.id,
+            name: element.category_name,
+            type: element.category_types,
           });
-        }
+        });
+        this.setState({
+          category_names: category,
+        });
+        console.log(category);
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
 
+  handleCategoryChange = (value) => {
+    console.log(value);
+    this.state.category_names.forEach((element) => {
+      if (element.id === value) {
+        this.setState({
+          type_names: element.type,
+        });
+      }
+    });
+  };
+
+  handleTypeChange = () => {};
+
   componentDidMount() {
+    this.loadCategories();
     this.loadDataForEdit();
   }
+
   render() {
     return (
       <MainLayout {...this.props}>
@@ -81,37 +117,81 @@ export class EditProduct extends React.Component {
         {this.state.product ? (
           <Form
             {...layout}
-            name="nest-messages"
+            name="Edit Product"
             onFinish={this.onFinish}
             validateMessages={validateMessages}
             initialValues={{
               title: this.state.product.title,
-              Description: this.state.product.description,
-              Type: this.state.product.Type,
-              Category: this.state.product.Category,
-              Vendor: this.state.product.vendor,
-              price: this.state.product.price
+              description: this.state.product.description,
+              type: this.state.product.Type,
+              category: this.state.product.category.category_name,
+              vendor: this.state.product.vendor.username,
+              price: this.state.product.price,
+              stock_quantity: this.state.product.stock_quantity,
             }}>
-            <Form.Item
-              name="title"
-              label="Product Title"
-              rules={[
-                {
-                  required: true
-                }
-              ]}>
+            <Form.Item name="title" label="Product Title">
               <Input />
             </Form.Item>
-            <Form.Item name="Description" label="Description">
+            <Form.Item name="description" label="Description">
               <Input.TextArea />
             </Form.Item>
-            <Form.Item name="Type" label="Type">
-              <Input />
+            <Form.Item
+              name="category"
+              label="Category"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}>
+              {this.state.category_names === null ? (
+                <Spin spinning={true} tip="Loading Categories..." />
+              ) : (
+                <Select
+                  placeholder="Please Select Category"
+                  defaultValue={"Please Select Category"}
+                  onChange={this.handleCategoryChange}
+                  style={{ width: "100%" }}>
+                  {this.state.category_names.map((item) => (
+                    <Select.Option key={item.id} value={item.id}>
+                      {item.name}
+                    </Select.Option>
+                  ))}
+                </Select>
+              )}
             </Form.Item>
-            <Form.Item name="Category" label="Category">
-              <Input />
+
+            <Form.Item
+              name="type"
+              label="Type"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}>
+              {this.state.type_names === null ? (
+                <Select
+                  placeholder="Please Select Type"
+                  defaultValue={"Please Select Type"}
+                  onChange={this.handleTypeChange}
+                  style={{ width: "100%" }}></Select>
+              ) : (
+                <Select
+                  placeholder="Please Select Type"
+                  defaultValue={"Please Select Type"}
+                  onChange={this.handleCategoryChange}
+                  style={{ width: "100%" }}>
+                  {this.state.type_names.map((item) => (
+                    <Select.Option key={item.id} value={item.title}>
+                      {item.title}
+                    </Select.Option>
+                  ))}
+                </Select>
+              )}
             </Form.Item>
-            <Form.Item name="Vendor" label="Vendor">
+            <Form.Item name="vendor" label="Vendor">
+              <Input disabled />
+            </Form.Item>
+            <Form.Item name="stock_quantity" label="Stock Quantity">
               <Input />
             </Form.Item>
             <Form.Item name="price" label="price">
@@ -129,7 +209,7 @@ export class EditProduct extends React.Component {
             </Form.Item>
           </Form>
         ) : (
-          <Spin spinning tip="Loadin gProduct..." />
+          <Spin spinning tip="Loading Product..." />
         )}
       </MainLayout>
     );

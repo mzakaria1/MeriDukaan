@@ -8,29 +8,29 @@ const { Content } = Layout;
 
 export class ResetPassword extends Component {
   state = {
-    resetting: false
+    resetting: false,
   };
 
-  onFinish = values => {
+  onFinish = (values) => {
     console.log("Received values of form: ", values);
     const { email } = values;
     this.setState({
-      resetting: true
+      resetting: true,
     });
     resetPassword(email)
-      .then(res => {
+      .then((res) => {
         console.log(res);
         this.setState({
-          resetting: false
+          resetting: false,
         });
         message.info(
           "A Reset Password Link has been sent to your email. Please check your email for further instructions."
         );
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
         this.setState({
-          resetting: false
+          resetting: false,
         });
         message.error(error.message);
       });
@@ -57,12 +57,12 @@ export class ResetPassword extends Component {
                     rules={[
                       {
                         required: true,
-                        message: "Please input your Username!"
+                        message: "Please input your Username!",
                       },
                       {
                         type: "email",
-                        message: "The input is not valid E-mail!"
-                      }
+                        message: "The input is not valid E-mail!",
+                      },
                     ]}>
                     <Input
                       prefix={<UserOutlined className="site-form-item-icon" />}

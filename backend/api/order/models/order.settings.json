@@ -1,0 +1,41 @@
+{
+  "kind": "collectionType",
+  "collectionName": "orders",
+  "info": {
+    "name": "Order"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true
+  },
+  "attributes": {
+    "status": {
+      "type": "string"
+    },
+    "total_amount": {
+      "type": "integer"
+    },
+    "customer": {
+      "model": "customer"
+    },
+    "ordered_products": {
+      "type": "component",
+      "repeatable": true,
+      "component": "order-products.ordered-products"
+    },
+    "margin_amount": {
+      "type": "integer"
+    },
+    "delivery_charges": {
+      "type": "integer"
+    },
+    "vendor": {
+      "plugin": "users-permissions",
+      "model": "user"
+    },
+    "reseller": {
+      "plugin": "users-permissions",
+      "model": "user"
+    }
+  }
+}

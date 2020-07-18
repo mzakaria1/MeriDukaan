@@ -1,0 +1,52 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/order-invoices",
+      "handler": "order-invoice.find",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/order-invoices/count",
+      "handler": "order-invoice.count",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/order-invoices/:id",
+      "handler": "order-invoice.findOne",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/order-invoices",
+      "handler": "order-invoice.create",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/order-invoices/:id",
+      "handler": "order-invoice.update",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/order-invoices/:id",
+      "handler": "order-invoice.delete",
+      "config": {
+        "policies": []
+      }
+    }
+  ]
+}

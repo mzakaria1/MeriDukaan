@@ -1,8 +1,7 @@
 import React from "react";
 
-import { Layout, Button } from "antd";
+import { Layout, Button, Tag } from "antd";
 import { PoweroffOutlined } from "@ant-design/icons";
-import { logout } from "../../helpers/auth";
 import Navigation from "../common/Navigation";
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -18,7 +17,12 @@ export class MainLayout extends React.Component {
   };
 
   onLogout = () => {
-    logout();
+    localStorage.removeItem("jwt");
+    localStorage.removeItem("LoggedInUsername");
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("userId");
+
+    window.location = "/login";
   };
 
   render() {
@@ -34,6 +38,7 @@ export class MainLayout extends React.Component {
               height: "32px",
               background: "rgba(255, 255, 255, 0.2)",
               margin: "16px",
+              color: "white",
             }}
           />
           <Navigation {...this.props} />
@@ -44,16 +49,66 @@ export class MainLayout extends React.Component {
             style={{
               padding: 0,
               background: "#fff",
-              textAlign: "right",
+              // textAlign: "right",
               paddingRight: "10px",
             }}>
-            <Button
-              type="primary"
-              icon={<PoweroffOutlined />}
-              loading={this.state.iconLoading}
-              onClick={this.onLogout}>
-              Logout
-            </Button>
+            <div
+              style={{
+                textAlign: "center",
+                width: "100%",
+                overflow: "hidden",
+              }}>
+              <div
+                style={{
+                  // display: "inlineBlock",
+                  // float: "left",
+                  position: "absolute",
+                  paddingTop: "15px",
+                  // textAlign: "center",
+                }}>
+                <h1
+                  style={{
+                    textAlign: "center",
+                    marginLft: "30px",
+                    paddingLeft: "30px",
+                    fontFamily: "Arial Black",
+                    fontSize: "30px",
+                    color: "purple",
+                  }}>
+                  <span style={{ fontFamily: "Bookman", fontSize: "22px" }}>
+                    Welcome to
+                  </span>
+                  {"   "}
+                  Meri Dukaan{"  "}
+                  <span style={{ fontFamily: "Bookman", fontSize: "22px" }}>
+                    Dashboard
+                  </span>
+                </h1>
+              </div>
+              <div
+                style={{
+                  float: "right",
+                  overflow: "hidden",
+                }}>
+                {localStorage.getItem("userRole") === "supplier" ? (
+                  <Button style={{ marginRight: "30px" }}>
+                    Supplier:{" "}
+                    {localStorage.getItem("LoggedInUsername").toUpperCase()}
+                  </Button>
+                ) : (
+                  <Button style={{ marginRight: "30px" }}>
+                    {localStorage.getItem("LoggedInUsername").toUpperCase()}
+                  </Button>
+                )}
+                <Button
+                  type="primary"
+                  icon={<PoweroffOutlined />}
+                  loading={this.state.iconLoading}
+                  onClick={this.onLogout}>
+                  Logout
+                </Button>
+              </div>
+            </div>
           </Header>
           <Content style={{ margin: "20px" }}>
             <div

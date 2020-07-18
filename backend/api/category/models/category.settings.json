@@ -16,6 +16,9 @@
       "type": "component",
       "repeatable": true,
       "component": "category.category-types"
+    },
+    "products": {
+      "collection": "product"
     }
   }
 }
